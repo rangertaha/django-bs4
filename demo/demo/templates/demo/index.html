@@ -1,0 +1,71 @@
+{% extends 'demo/base.html' %}
+
+{% load bs4 %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-8 blog-main">
+        {% block main %}{% endblock %}
+    </div>
+    <!-- /.blog-main -->
+
+
+    <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+        {% block sidebar %}
+        <div class="sidebar-module">
+
+
+            <ul>
+                <li><a href="{% url 'form-control' %}">Form controls</a></li>
+                <li><a href="{% url 'form-layout' %}">Form layouts</a>
+                    <ul>
+                        <li><a href="#form-groups">Form groups</a></li>
+                        <li><a href="#inline-forms">Inline forms</a>
+                            <ul>
+                                <li><a href="#visible-labels">Visible labels</a></li>
+                                <li><a href="#hidden-labels">Hidden labels</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#using-the-grid">Using the Grid</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#checkboxes-and-radios">Checkboxes and radios</a>
+                    <ul>
+                        <li><a href="#default-stacked">Default (stacked)</a></li>
+                        <li><a href="#inline">Inline</a></li>
+                        <li><a href="#without-labels">Without labels</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#static-controls">Static controls</a></li>
+                <li><a href="#disabled-states">Disabled states</a></li>
+                <li><a href="#readonly-inputs">Readonly inputs</a></li>
+                <li><a href="#control-sizing">Control sizing</a></li>
+                <li><a href="#column-sizing">Column sizing</a></li>
+                <li><a href="#help-text">Help text</a></li>
+                <li><a href="#validation">Validation</a></li>
+                <li><a href="#custom-forms">Custom forms</a>
+                    <ul>
+                        <li><a href="#checkboxes-and-radios-1">Checkboxes and radios</a>
+                            <ul>
+                                <li><a href="#checkboxes">Checkboxes</a></li>
+                                <li><a href="#radios">Radios</a></li>
+                                <li><a href="#stacked">Stacked</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#select-menu">Select menu</a></li>
+                        <li><a href="#file-browser">File browser</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+
+        </div>
+        {% endblock %}
+    </div>
+    <!-- /.blog-sidebar -->
+
+</div><!-- /.row -->
+
+{% endblock %}

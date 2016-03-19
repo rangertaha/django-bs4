@@ -1,0 +1,6 @@
+include AUTHORS.rst
+include HISTORY.rst
+include LICENSE
+include README.rst
+recursive-include bs4 *.html *.png *.gif *js *jpg *jpeg *svg *py
+recursive-include demod *.html *.png *.gif *js *jpg *jpeg *svg *py
