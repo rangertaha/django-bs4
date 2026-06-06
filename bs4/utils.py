@@ -1,18 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import re
 
 from django.forms.widgets import flatatt
 from django.template import Variable, VariableDoesNotExist
 from django.template.base import FilterExpression, kwarg_re, TemplateSyntaxError
 from django.template.loader import get_template
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-
-try:
-    from django.utils.html import format_html
-except ImportError:
-    from .legacy import format_html_pre_18 as format_html
 
 from .text import text_value
 
@@ -56,7 +49,7 @@ def parse_token_contents(parser, token):
             match = kwarg_re.match(bit)
             if not match:
                 raise TemplateSyntaxError(
-                    'Malformed arguments to tag "{}"'.format(tag))
+                    f'Malformed arguments to tag "{tag}"')
             name, value = match.groups()
             if name:
                 kwargs[name] = parser.compile_filter(value)

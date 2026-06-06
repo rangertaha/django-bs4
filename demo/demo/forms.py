@@ -1,12 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django import forms
-from django.forms.formsets import BaseFormSet, formset_factory
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 
-from bs4.tests import TestForm
 
 RADIO_CHOICES = (
     ('1', 'Radio 1'),

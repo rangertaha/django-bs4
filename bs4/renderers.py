@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib.auth.forms import ReadOnlyPasswordHashWidget
 from django.forms import (
     TextInput, DateInput, FileInput, CheckboxInput, MultiWidget,
-    ClearableFileInput, Select, RadioSelect, CheckboxSelectMultiple
+    ClearableFileInput, Select, RadioSelect, CheckboxSelectMultiple,
+    SelectDateWidget, BaseForm, BoundField
 )
-from django.forms.extras import SelectDateWidget
-from django.forms.forms import BaseForm, BoundField
 from django.forms.formsets import BaseFormSet
 from django.utils.html import conditional_escape, escape, strip_tags
 from django.utils.safestring import mark_safe
@@ -22,7 +18,7 @@ from .text import text_value
 from .utils import add_css_class, render_template_file
 
 
-class BaseRenderer(object):
+class BaseRenderer:
     """
     A content renderer
     """
@@ -56,7 +52,7 @@ class BaseRenderer(object):
             return 'large'
         if size in ('md', 'medium', ''):
             return 'medium'
-        raise BootstrapError('Invalid value "%s" for parameter "size" (expected "sm", "md", "lg" or "").' % size)
+        raise BootstrapError(f'Invalid value "{size}" for parameter "size" (expected "sm", "md", "lg" or "").')
 
     def get_size_class(self, prefix='input'):
         if self.size == 'small':
@@ -82,7 +78,7 @@ class FormsetRenderer(BaseRenderer):
             raise BootstrapError(
                 'Parameter "formset" should contain a valid Django Formset.')
         self.formset = formset
-        super(FormsetRenderer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def render_management_form(self):
         return text_value(self.formset.management_form)
@@ -117,7 +113,7 @@ class FormsetRenderer(BaseRenderer):
         formset_errors = self.get_formset_errors()
         if formset_errors:
             return render_template_file(
-                'bootstrap3/form_errors.html',
+                'bs4/form_errors.html',
                 context={
                     'errors': formset_errors,
                     'form': self.formset,
@@ -146,7 +142,7 @@ class FormRenderer(BaseRenderer):
             raise BootstrapError(
                 'Parameter "form" should contain a valid Django Form.')
         self.form = form
-        super(FormRenderer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Handle form.empty_permitted
         if self.form.empty_permitted:
             self.set_required = False
@@ -195,7 +191,7 @@ class FormRenderer(BaseRenderer):
 
         if form_errors:
             return render_template_file(
-                'bootstrap3/form_errors.html',
+                'bs4/form_errors.html',
                 context={
                     'errors': form_errors,
                     'form': self.form,
@@ -226,7 +222,7 @@ class FieldRenderer(BaseRenderer):
         if not isinstance(field, BoundField):
             raise BootstrapError('Parameter "field" should contain a valid Django BoundField.')
         self.field = field
-        super(FieldRenderer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.widget = field.field.widget
         self.is_multi_widget = isinstance(field.field.widget, MultiWidget)
@@ -275,6 +271,8 @@ class FieldRenderer(BaseRenderer):
 
     def restore_widget_attrs(self):
         self.widget.attrs = self.initial_attrs
+        # Undo any per-render override of ``use_required_attribute``.
+        self.widget.__dict__.pop('use_required_attribute', None)
 
     def add_class_attrs(self, widget=None):
         if widget is None:
@@ -309,8 +307,14 @@ class FieldRenderer(BaseRenderer):
     def add_required_attrs(self, widget=None):
         if widget is None:
             widget = self.widget
-        if self.set_required and is_widget_required_attribute(widget):
-            widget.attrs['required'] = 'required'
+        if self.set_required:
+            if is_widget_required_attribute(widget):
+                widget.attrs['required'] = 'required'
+        else:
+            # Modern Django adds the HTML5 ``required`` attribute
+            # automatically for required fields. Suppress it when the
+            # caller opted out via ``set_required=False``.
+            widget.use_required_attribute = lambda initial: False
 
     def add_disabled_attrs(self, widget=None):
         if widget is None:
@@ -335,7 +339,7 @@ class FieldRenderer(BaseRenderer):
         mapping = [
             ('<ul', '<div'),
             ('</ul>', '</div>'),
-            ('<li', '<div class="{klass}"'.format(klass=classes)),
+            ('<li', f'<div class="{classes}"'),
             ('</li>', '</div>'),
         ]
         for k, v in mapping:
@@ -343,10 +347,7 @@ class FieldRenderer(BaseRenderer):
         return html
 
     def put_inside_label(self, html):
-        content = '{field} {label}'.format(
-            field=html,
-            label=self.field.label,
-        )
+        content = f'{html} {self.field.label}'
         return render_label(
             content=mark_safe(content),
             label_for=self.field.id_for_label,
@@ -376,9 +377,7 @@ class FieldRenderer(BaseRenderer):
 
         """
         # TODO This needs improvement
-        return '<div class="row bootstrap3-multi-input"><div class="col-xs-12">{html}</div></div>'.format(
-            html=html
-        )
+        return f'<div class="row bootstrap3-multi-input"><div class="col-xs-12">{html}</div></div>'
 
     def post_widget_render(self, html):
         if isinstance(self.widget, RadioSelect):
@@ -396,23 +395,14 @@ class FieldRenderer(BaseRenderer):
     def wrap_widget(self, html):
         if isinstance(self.widget, CheckboxInput):
             checkbox_class = add_css_class('checkbox', self.get_size_class())
-            html = '<div class="{klass}">{content}</div>'.format(
-                klass=checkbox_class,
-                content=html,
-            )
+            html = f'<div class="{checkbox_class}">{html}</div>'
         return html
 
     def make_input_group(self, html):
         if (self.addon_before or self.addon_after) and isinstance(self.widget, (TextInput, DateInput, Select)):
-            before = '<span class="input-group-addon">{addon}</span>'.format(
-                addon=self.addon_before) if self.addon_before else ''
-            after = '<span class="input-group-addon">{addon}</span>'.format(
-                addon=self.addon_after) if self.addon_after else ''
-            html = '<div class="input-group">{before}{html}{after}</div>'.format(
-                before=before,
-                after=after,
-                html=html
-            )
+            before = f'<span class="input-group-addon">{self.addon_before}</span>' if self.addon_before else ''
+            after = f'<span class="input-group-addon">{self.addon_after}</span>' if self.addon_after else ''
+            html = f'<div class="input-group">{before}{html}{after}</div>'
         return html
 
     def append_to_field(self, html):
@@ -422,14 +412,14 @@ class FieldRenderer(BaseRenderer):
         help_text_and_errors += self.field_errors
         if help_text_and_errors:
             help_html = render_template_file(
-                'bootstrap3/field_help_text_and_errors.html',
+                'bs4/field_help_text_and_errors.html',
                 context={
                     'field': self.field,
                     'help_text_and_errors': help_text_and_errors,
                     'layout': self.layout,
                 }
             )
-            html += '<span class="help-block">{help}</span>'.format(help=help_html)
+            html += f'<span class="help-block">{help_html}</span>'
         return html
 
     def get_field_class(self):
@@ -441,8 +431,7 @@ class FieldRenderer(BaseRenderer):
     def wrap_field(self, html):
         field_class = self.get_field_class()
         if field_class:
-            html = '<div class="{klass}">{html}</div>'.format(
-                klass=field_class, html=html)
+            html = f'<div class="{field_class}">{html}</div>'
         return html
 
     def get_label_class(self):
@@ -527,7 +516,7 @@ class InlineFieldRenderer(FieldRenderer):
         self.widget.attrs['title'] = field_title.strip()
 
     def add_widget_attrs(self):
-        super(InlineFieldRenderer, self).add_widget_attrs()
+        super().add_widget_attrs()
         self.add_error_attrs()
 
     def append_to_field(self, html):

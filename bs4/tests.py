@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import re
+from html.parser import HTMLParser
 
 from django import forms
 from django.contrib.admin.widgets import AdminSplitDateTime
@@ -13,11 +11,6 @@ from django.test import TestCase
 from .exceptions import BootstrapError
 from .text import text_value, text_concat
 from .utils import add_css_class, render_tag
-
-try:
-    from html.parser import HTMLParser
-except ImportError:
-    from HTMLParser import HTMLParser
 
 RADIO_CHOICES = (
     ('1', 'Radio 1'),
@@ -92,7 +85,7 @@ class TestForm(forms.Form):
     required_css_class = 'bootstrap3-req'
 
     def clean(self):
-        cleaned_data = super(TestForm, self).clean()
+        cleaned_data = super().clean()
         raise forms.ValidationError(
             "This error was added to show the non field errors styling.")
         return cleaned_data
@@ -118,7 +111,7 @@ def render_template_with_bootstrap(text, context=None):
     """
     if not context:
         context = {}
-    return render_template("{% load bootstrap3 %}" + text, context)
+    return render_template("{% load bs4 %}" + text, context)
 
 
 def render_template_with_form(text, context=None):
@@ -157,7 +150,7 @@ def render_form_field(field, context=None):
     """
     Create a template that renders a field
     """
-    form_field = 'form.%s' % field
+    form_field = f'form.{field}'
     return render_template_with_form('{% bootstrap_field ' + form_field + ' %}', context)
 
 
@@ -190,21 +183,21 @@ def get_title_from_html(html):
 
 class SettingsTest(TestCase):
     def test_settings(self):
-        from .bootstrap import BOOTSTRAP3
-        self.assertTrue(BOOTSTRAP3)
+        from .bootstrap import BOOTSTRAP4
+        self.assertTrue(BOOTSTRAP4)
 
     def test_bootstrap_javascript_tag(self):
         res = render_template_with_form('{% bootstrap_javascript %}')
         self.assertEqual(
             res.strip(),
-            '<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>'
+            '<script src="//cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>'
         )
 
     def test_bootstrap_css_tag(self):
         res = render_template_with_form('{% bootstrap_css %}')
         self.assertIn(res.strip(), [
-            '<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">',
-            '<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">',
+            '<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">',
+            '<link href="//cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">',
         ])
 
     def test_settings_filter(self):
@@ -240,12 +233,12 @@ class TemplateTest(TestCase):
 
     def test_bootstrap_template(self):
         res = render_template(
-            '{% extends "bootstrap3/bootstrap3.html" %}' +
-            '{% block bootstrap3_content %}' +
-            'test_bootstrap3_content' +
+            '{% extends "bs4/base.html" %}' +
+            '{% block bs4_content %}' +
+            'test_bs4_content' +
             '{% endblock %}'
         )
-        self.assertIn('test_bootstrap3_content', res)
+        self.assertIn('test_bs4_content', res)
 
     def test_javascript_without_jquery(self):
         res = render_template_with_form('{% bootstrap_javascript jquery=0 %}')
@@ -278,13 +271,13 @@ class FormTest(TestCase):
                 self.assertIn('name="datetime_0"', res)
                 self.assertIn('name="datetime_1"', res)
             else:
-                self.assertIn('name="%s"' % field.name, res)
+                self.assertIn(f'name="{field.name}"', res)
 
     def test_field_addons(self):
         form = TestForm()
         res = render_form(form)
         self.assertIn('<div class="input-group"><span class="input-group-addon">before</span><input', res)
-        self.assertIn('/><span class="input-group-addon">after</span></div>', res)
+        self.assertIn('><span class="input-group-addon">after</span></div>', res)
 
     def test_exclude(self):
         form = TestForm()
@@ -471,7 +464,7 @@ class ComponentsTest(TestCase):
 
 class MessagesTest(TestCase):
     def test_messages(self):
-        class FakeMessage(object):
+        class FakeMessage:
             """
             Follows the `django.contrib.messages.storage.base.Message` API.
             """

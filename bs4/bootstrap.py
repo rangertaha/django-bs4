@@ -1,17 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from importlib import import_module
 
 from django.conf import settings
-try:
-    from importlib import import_module
-except ImportError:
-    from django.utils.importlib import import_module
 
 
 # Default settings
-BOOTSTRAP3_DEFAULTS = {
+BOOTSTRAP4_DEFAULTS = {
     'jquery_url': '//code.jquery.com/jquery.min.js',
-    'base_url': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/',
+    'base_url': '//cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/',
     'css_url': None,
     'theme_url': None,
     'javascript_url': None,
@@ -26,29 +21,29 @@ BOOTSTRAP3_DEFAULTS = {
     'error_css_class': 'has-error',
     'success_css_class': 'has-success',
     'formset_renderers': {
-        'default': 'bootstrap3.renderers.FormsetRenderer',
+        'default': 'bs4.renderers.FormsetRenderer',
     },
     'form_renderers': {
-        'default': 'bootstrap3.renderers.FormRenderer',
+        'default': 'bs4.renderers.FormRenderer',
     },
     'field_renderers': {
-        'default': 'bootstrap3.renderers.FieldRenderer',
-        'inline': 'bootstrap3.renderers.InlineFieldRenderer',
+        'default': 'bs4.renderers.FieldRenderer',
+        'inline': 'bs4.renderers.InlineFieldRenderer',
     },
 }
 
 # Start with a copy of default settings
-BOOTSTRAP3 = BOOTSTRAP3_DEFAULTS.copy()
+BOOTSTRAP4 = BOOTSTRAP4_DEFAULTS.copy()
 
 # Override with user settings from settings.py
-BOOTSTRAP3.update(getattr(settings, 'BOOTSTRAP3', {}))
+BOOTSTRAP4.update(getattr(settings, 'BOOTSTRAP4', {}))
 
 
 def get_bootstrap_setting(setting, default=None):
     """
     Read a setting
     """
-    return BOOTSTRAP3.get(setting, default)
+    return BOOTSTRAP4.get(setting, default)
 
 
 def bootstrap_url(postfix):

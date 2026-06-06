@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.conf.urls import patterns, url
+from django.urls import path
 
 from .views import IndexPageView, FormControlView
 
 
 urlpatterns = [
-    url(r'^$', IndexPageView.as_view(), name='index'),
-    url(r'^form/control$', FormControlView.as_view(), name='form-control'),
-    url(r'^form/control$', FormControlView.as_view(), name='form-layout'),
+    path('', IndexPageView.as_view(), name='index'),
+    path('form/control', FormControlView.as_view(), name='form-control'),
+    path('form/layout', FormControlView.as_view(), name='form-layout'),
 ]

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import re
 from math import floor
 
@@ -8,9 +5,9 @@ from django import template
 from django.contrib.messages import constants as message_constants
 from django.contrib.messages import constants as DEFAULT_MESSAGE_LEVELS
 from django.template import Context
+from django.utils.encoding import force_str
 from django.utils.safestring import mark_safe
 
-"""
 from ..bootstrap import (
     css_url, javascript_url, jquery_url, theme_url, get_bootstrap_setting
 )
@@ -20,10 +17,8 @@ from ..forms import (
     render_form_group, render_formset,
     render_label, render_form_errors, render_formset_errors
 )
-from ..text import force_text
 from ..utils import handle_var, parse_token_contents
 from ..utils import render_link_tag, render_tag, render_template_file
-"""
 
 MESSAGE_LEVEL_CLASSES = {
     DEFAULT_MESSAGE_LEVELS.DEBUG: "alert alert-warning",
@@ -36,8 +31,6 @@ MESSAGE_LEVEL_CLASSES = {
 register = template.Library()
 
 
-
-'''
 @register.filter
 def bootstrap_setting(value):
     """
@@ -736,10 +729,10 @@ def bootstrap_messages(context, *args, **kwargs):
     if Context and isinstance(context, Context):
         context = context.flatten()
     context.update({'message_constants': message_constants})
-    return render_template_file('bootstrap3/messages.html', context=context)
+    return render_template_file('bs4/messages.html', context=context)
 
 
-@register.inclusion_tag('bootstrap3/pagination.html')
+@register.inclusion_tag('bs4/pagination.html')
 def bootstrap_pagination(page, **kwargs):
     """
     Render pagination for a page
@@ -807,8 +800,7 @@ def get_pagination_context(page, pages_to_show=11,
     pages_to_show = int(pages_to_show)
     if pages_to_show < 1:
         raise ValueError(
-            "Pagination pages_to_show should be a positive integer, you specified {pages}".format(
-                pages=pages_to_show)
+            f"Pagination pages_to_show should be a positive integer, you specified {pages_to_show}"
         )
     num_pages = page.paginator.num_pages
     current_page = page.number
@@ -847,9 +839,9 @@ def get_pagination_context(page, pages_to_show=11,
         # Append proper character to url
     if url:
         # Remove existing page GET parameters
-        url = force_text(url)
-        url = re.sub(r'\?{0}\=[^\&]+'.format(parameter_name), '?', url)
-        url = re.sub(r'\&{0}\=[^\&]+'.format(parameter_name), '', url)
+        url = force_str(url)
+        url = re.sub(rf'\?{parameter_name}\=[^\&]+', '?', url)
+        url = re.sub(rf'\&{parameter_name}\=[^\&]+', '', url)
         # Append proper separator
         if '?' in url:
             url += '&'
@@ -859,7 +851,7 @@ def get_pagination_context(page, pages_to_show=11,
     if extra:
         if not url:
             url = '?'
-        url += force_text(extra) + '&'
+        url += force_str(extra) + '&'
     if url:
         url = url.replace('?&', '?')
     # Set CSS classes, see http://getbootstrap.com/components/#pagination
@@ -881,5 +873,3 @@ def get_pagination_context(page, pages_to_show=11,
         'pagination_css_classes': ' '.join(pagination_css_classes),
         'parameter_name': parameter_name,
     }
-
-'''
