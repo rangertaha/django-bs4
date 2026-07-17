@@ -1,92 +1,143 @@
-======================
-Bootstrap 4 for Django
-======================
+==========
+django-bs4
+==========
 
-Bootstrap 4 for  Django projects
+Bootstrap 4 forms and components for Django templates.
 
-
-
-Write Django as usual, and let ``django-bs4`` make template output into Bootstrap 4 code.
-
-
-.. image:: https://travis-ci.org/rangertaha/django-bs4.svg?branch=master
-    :target: https://travis-ci.org/rangertaha/django-bs4
+.. image:: https://github.com/rangertaha/django-bs4/actions/workflows/ci.yml/badge.svg?branch=master
+    :target: https://github.com/rangertaha/django-bs4/actions/workflows/ci.yml
+    :alt: CI status
 
 .. image:: https://img.shields.io/pypi/v/django-bs4.svg
-    :target: https://pypi.python.org/pypi/django-bs4
+    :target: https://pypi.org/project/django-bs4/
     :alt: Latest PyPI version
 
-.. image:: https://img.shields.io/pypi/dm/django-bs4.svg
-    :target: https://pypi.python.org/pypi/django-bs4
-    :alt: Number of PyPI downloads per month
+.. image:: https://img.shields.io/badge/python-3.12%20%7C%203.13%20%7C%203.14-blue.svg
+    :target: https://pypi.org/project/django-bs4/
+    :alt: Supported Python versions
 
+.. image:: https://img.shields.io/badge/license-MIT-green.svg
+    :target: https://github.com/rangertaha/django-bs4/blob/master/LICENSE
+    :alt: MIT License
 
-Requirements
-------------
+What
+----
 
-- Python 2.7, 3.2, 3.3, 3.4, or 3.5
-- Django >= 1.8
+``django-bs4`` is a reusable Django app that renders plain Django forms,
+formsets, fields, buttons, alerts, messages, and pagination as
+`Bootstrap 4 <https://getbootstrap.com/docs/4.6/>`_ markup. Write your forms
+as usual and let the ``bs4`` template tag library take care of the HTML.
 
+Requires Python 3.12+ and Django 5.2 LTS.
 
+Install
+-------
 
-Installation
-------------
+Install from PyPI:
 
-1. Install using pip:
+.. code:: bash
 
-   ``pip install django-bs4``
+    pip install django-bs4
 
-   Alternatively, you can install download or clone this repo and call ``pip install -e .``.
+Or install the development version from a checkout:
 
+.. code:: bash
 
-2. Add to INSTALLED_APPS in your ``settings.py``:
+    pip install -e .
 
-   ``'bs4',``
+Then add ``bs4`` to ``INSTALLED_APPS`` in your ``settings.py``:
 
-3. In your templates, load the ``bs4`` library and use the tags:
+.. code:: python
 
+    INSTALLED_APPS = [
+        # ...
+        "bs4",
+    ]
 
+Usage
+-----
 
-Example template
-----------------
+Load the ``bs4`` library in your templates and use its tags:
 
-   .. code:: Django
+.. code:: django
 
     {% load bs4 %}
 
     <form action="/" method="post" class="form">
         {% csrf_token %}
 
-        {% bs4_form form %}
+        {% bootstrap_form form %}
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        {% buttons %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        {% endbuttons %}
     </form>
 
+Commonly used tags include:
 
-Documentation
+- ``{% bootstrap_form form %}`` / ``{% bootstrap_formset formset %}`` --
+  render a whole form or formset
+- ``{% bootstrap_field form.field %}`` -- render a single field
+- ``{% bootstrap_css %}`` / ``{% bootstrap_javascript %}`` -- include the
+  Bootstrap 4 static assets from a CDN
+- ``{% bootstrap_button "Save" button_type="submit" %}`` and
+  ``{% bootstrap_alert "Done!" alert_type="success" %}``
+- ``{% bootstrap_messages %}`` -- render ``django.contrib.messages``
+- ``{% bootstrap_pagination page %}`` -- render a paginator
+
+Configuration
 -------------
 
-The full documentation is at http://django-bs4.readthedocs.org/.
+All settings are optional and live in a single ``BOOTSTRAP4`` dict in your
+``settings.py``. The defaults are defined in ``bs4/bootstrap.py``; the most
+common overrides:
 
+.. code:: python
+
+    BOOTSTRAP4 = {
+        # CDN locations of the static assets.
+        "base_url": "//cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/",
+        "jquery_url": "//code.jquery.com/jquery.min.js",
+        # Layout classes for horizontal forms.
+        "horizontal_label_class": "col-md-3",
+        "horizontal_field_class": "col-md-9",
+        # Field rendering behavior.
+        "set_required": True,
+        "set_placeholder": True,
+        "required_css_class": "",
+        "error_css_class": "has-error",
+        "success_css_class": "has-success",
+    }
+
+Development
+-----------
+
+.. code:: bash
+
+    # Run the test suite (uses the standalone Django test runner).
+    python runtests.py
+
+    # Lint, format, and type-check.
+    ruff check .
+    ruff format --check .
+    mypy
+
+    # Try the demo project.
+    cd demo && python manage.py runserver
 
 Bugs and suggestions
 --------------------
 
-If you have found a bug or if you have a request for additional functionality, please use the issue tracker on GitHub.
-
+Please use the issue tracker on GitHub:
 https://github.com/rangertaha/django-bs4/issues
-
 
 License
 -------
 
-You can use this under Apache 2.0. See `LICENSE
-<LICENSE>`_ file for details.
-
+MIT. See the `LICENSE <LICENSE>`_ file for details.
 
 Author
 ------
 
 Developed and maintained by `Rangertaha <https://github.com/rangertaha>`_.
-
-Please see AUTHORS.rst for a list of contributors.
+See `AUTHORS.rst <AUTHORS.rst>`_ for a list of contributors.

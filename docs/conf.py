@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Complexity documentation build configuration file, created by sphinx-quickstart
 
@@ -40,8 +39,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django-bs4'
-copyright = u'2016, Rangertaha'
+project = 'django-bs4'
+copyright = '2016, Rangertaha'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -186,8 +185,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'django-bs4.tex', u'django-bs4 Documentation',
-   u'Rangertaha', 'manual'),
+  ('index', 'django-bs4.tex', 'django-bs4 Documentation',
+   'Rangertaha', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -216,8 +215,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-bs4', u'django-bs4 Documentation',
-     [u'Rangertaha'], 1)
+    ('index', 'django-bs4', 'django-bs4 Documentation',
+     ['Rangertaha'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -230,8 +229,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'django-bs4', u'django-bs4 Documentation',
-   u'Rangertaha', 'django-bs4', 'Bootstrap4 for django projects',
+  ('index', 'django-bs4', 'django-bs4 Documentation',
+   'Rangertaha', 'django-bs4', 'Bootstrap4 for django projects',
    'Miscellaneous'),
 ]
 

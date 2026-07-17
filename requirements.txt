@@ -1,5 +1,5 @@
 # Development / documentation requirements.
 # Runtime dependencies are declared in pyproject.toml.
-Django>=5.2
+Django>=5.2,<6.0
 Sphinx
 sphinx_rtd_theme
