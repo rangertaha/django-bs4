@@ -2,24 +2,24 @@
 Settings
 ========
 
-The django-bootstrap3 has some pre-configured settings.
+``django-bs4`` has some pre-configured settings.
 
-They can be modified by adding a dict variable called ``BOOTSTRAP3`` in your
+They can be modified by adding a dict variable called ``BOOTSTRAP4`` in your
 ``settings.py`` and customizing the values ​​you want;
 
-The ``BOOTSTRAP3`` dict variable contains these settings and defaults:
+The ``BOOTSTRAP4`` dict variable contains these settings and defaults:
 
 
 .. code:: django
 
     # Default settings
-    BOOTSTRAP3 = {
+    BOOTSTRAP4 = {
 
         # The URL to the jQuery JavaScript file
         'jquery_url': '//code.jquery.com/jquery.min.js',
 
         # The Bootstrap base URL
-        'base_url': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/',
+        'base_url': '//cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/',
 
         # The complete URL to the Bootstrap CSS file (None means derive it from base_url)
         'css_url': None,
@@ -30,10 +30,10 @@ The ``BOOTSTRAP3`` dict variable contains these settings and defaults:
         # The complete URL to the Bootstrap JavaScript file (None means derive it from base_url)
         'javascript_url': None,
 
-        # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bootstrap3.html)
+        # Put JavaScript in the HEAD section of the HTML document (only relevant if you use bs4/base.html)
         'javascript_in_head': False,
 
-        # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
+        # Include jQuery with Bootstrap JavaScript (affects django-bs4 template tags)
         'include_jquery': False,
 
         # Label class to use in horizontal forms
@@ -62,13 +62,13 @@ The ``BOOTSTRAP3`` dict variable contains these settings and defaults:
 
         # Renderers (only set these if you have studied the source and understand the inner workings)
         'formset_renderers':{
-            'default': 'bootstrap3.renderers.FormsetRenderer',
+            'default': 'bs4.renderers.FormsetRenderer',
         },
         'form_renderers': {
-            'default': 'bootstrap3.renderers.FormRenderer',
+            'default': 'bs4.renderers.FormRenderer',
         },
         'field_renderers': {
-            'default': 'bootstrap3.renderers.FieldRenderer',
-            'inline': 'bootstrap3.renderers.InlineFieldRenderer',
+            'default': 'bs4.renderers.FieldRenderer',
+            'inline': 'bs4.renderers.InlineFieldRenderer',
         },
     }

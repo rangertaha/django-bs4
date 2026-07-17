@@ -30,5 +30,5 @@ Demo application
 
 The demo application provides a number of useful examples.
 
-https://github.com/rangertaha/django-bs4/tree/develop/demo
+https://github.com/rangertaha/django-bs4/tree/master/demo
 

@@ -151,10 +151,10 @@ LOGGING = {
     },
 }
 
-# Settings for django-bootstrap3
+# Settings for django-bs4
 BOOTSTRAP4 = {
     "set_required": False,
-    "error_css_class": "bootstrap3-error",
-    "required_css_class": "bootstrap3-required",
+    "error_css_class": "bs4-error",
+    "required_css_class": "bs4-required",
     "javascript_in_head": True,
 }
