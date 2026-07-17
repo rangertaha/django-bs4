@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.forms import ReadOnlyPasswordHashWidget
 from django.forms import (
     BaseForm,
@@ -376,6 +378,15 @@ class FieldRenderer(BaseRenderer):
         ]
         for k, v in mapping:
             html = html.replace(k, v)
+        # Django >= 4 renders multiple-input widgets with plain ``<div>``
+        # wrappers instead of ``<ul>``/``<li>`` lists. Add the class to each
+        # option wrapper (a bare ``<div>`` directly followed by an option
+        # ``<label>``/``<input>``), leaving optgroup wrappers untouched.
+        html = re.sub(
+            r"<div>(?=\s*(?:<label[^>]*>)?\s*<input)",
+            f'<div class="{classes}">',
+            html,
+        )
         return html
 
     def put_inside_label(self, html):
@@ -412,10 +423,12 @@ class FieldRenderer(BaseRenderer):
         return f'<div class="row bootstrap3-multi-input"><div class="col-xs-12">{html}</div></div>'
 
     def post_widget_render(self, html):
-        if isinstance(self.widget, RadioSelect):
-            html = self.list_to_class(html, "radio")
-        elif isinstance(self.widget, CheckboxSelectMultiple):
+        # ``CheckboxSelectMultiple`` subclasses ``RadioSelect``, so the more
+        # specific class must be checked first.
+        if isinstance(self.widget, CheckboxSelectMultiple):
             html = self.list_to_class(html, "checkbox")
+        elif isinstance(self.widget, RadioSelect):
+            html = self.list_to_class(html, "radio")
         elif isinstance(self.widget, SelectDateWidget):
             html = self.fix_date_select_input(html)
         elif isinstance(self.widget, ClearableFileInput):

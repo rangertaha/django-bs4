@@ -13,8 +13,11 @@ import os
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath(os.path.join('..', 'src')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
-os.environ['DJANGO_SETTINGS_MODULE'] = 'testsettings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'docs_settings'
 
+import django
+
+django.setup()
 
 import bs4
 

@@ -412,6 +412,33 @@ class FieldTest(TestCase):
         self.assertIn('type="password"', res)
         self.assertIn('placeholder="Password"', res)
 
+    def test_radio_select(self):
+        res = render_form_field("category1")
+        self.assertIn('class="radio"', res)
+        self.assertNotIn('class="checkbox"', res)
+        # One wrapper per option (RADIO_CHOICES has two options).
+        self.assertEqual(res.count('class="radio"'), 2)
+
+    def test_checkbox_select_multiple(self):
+        # CheckboxSelectMultiple subclasses RadioSelect, so it must be
+        # matched before RadioSelect to get the checkbox class.
+        res = render_form_field("category2")
+        self.assertIn('class="checkbox"', res)
+        self.assertNotIn('class="radio"', res)
+        self.assertEqual(res.count('class="checkbox"'), 2)
+
+    def test_radio_select_with_optgroups(self):
+        # MEDIA_CHOICES has five options across optgroups; each option
+        # wrapper gets the class, the optgroup wrappers do not.
+        res = render_form_field("category3")
+        self.assertEqual(res.count('class="radio"'), 5)
+        self.assertNotIn('class="checkbox"', res)
+
+    def test_checkbox_select_multiple_with_optgroups(self):
+        res = render_form_field("category4")
+        self.assertEqual(res.count('class="checkbox"'), 5)
+        self.assertNotIn('class="radio"', res)
+
     def test_required_field(self):
         required_field = render_form_field("subject")
         self.assertIn("required", required_field)

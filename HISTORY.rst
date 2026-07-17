@@ -49,6 +49,16 @@ Fixed
   and the broken renderer imports).
 * Honor ``set_required=False`` against Django's automatic HTML5 ``required``
   attribute.
+* ``CheckboxSelectMultiple`` fields are styled with the ``checkbox`` class
+  again. The branch was shadowed by the ``RadioSelect`` check (its parent
+  class since Django 4), and the class replacement now also understands the
+  ``<div>``-based widget markup Django 4+ renders instead of ``<ul>/<li>``,
+  so radio/checkbox option wrappers get their Bootstrap classes once more.
+* Point ``docs/conf.py`` at a real settings module (``docs/docs_settings.py``,
+  mirroring ``runtests.py``) instead of the never-existing ``testsettings``,
+  and call ``django.setup()`` so Sphinx autodoc can import the package.
+* Rename the demo project's misspelled ``demo/demo/statc/`` directory to
+  ``static/``.
 
 Removed
 ~~~~~~~
